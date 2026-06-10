@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#2A3257">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Abby & Jacob">
+<link rel="manifest" href="manifest.json">
+<title>Abby &amp; Jacob</title>
+<style>
+  :root{
+    --lilac:#8B7DD8; --lilac-soft:#EDEAF9; --lilac-deep:#5E51A8;
+    --navy:#2A3257; --navy-soft:#3A4470;
+    --ink:#23263B; --muted:#7A7E96; --line:#E7E5F0;
+    --bg:#FBFAFD; --card:#FFFFFF; --gold:#C9A84C;
+    --highlight:#FCF6E4; --highlight-line:#E8D89A;
+    --radius:16px; --radius-sm:11px;
+    --serif:Georgia,'Times New Roman',serif;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:var(--sans); background:var(--bg); color:var(--ink);
+    line-height:1.5; padding-bottom:84px;
+    -webkit-font-smoothing:antialiased;
+  }
+  /* ---------- HEADER ---------- */
+  header{
+    background:var(--navy); color:#fff; padding:18px 18px 15px;
+    position:sticky; top:0; z-index:30;
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+  }
+  .h-left{min-width:0;}
+  .h-couple{font-family:var(--serif); font-size:24px; letter-spacing:.5px; margin:0; font-weight:400;}
+  .h-couple .amp{color:var(--lilac); font-style:italic;}
+  .h-sub{font-size:11px; color:#B9BDD6; margin:3px 0 0; letter-spacing:.4px; text-transform:uppercase;}
+  .h-countdown{flex:0 0 auto; text-align:center; background:rgba(139,125,216,.22); border:1px solid rgba(139,125,216,.5); border-radius:12px; padding:7px 11px; min-width:70px;}
+  .h-cd-num{font-size:20px; font-weight:700; line-height:1; color:#fff;}
+  .h-cd-lbl{font-size:9px; letter-spacing:1px; text-transform:uppercase; color:#C7CBE4; margin-top:3px;}
+  .h-cd-married{font-size:12px; font-weight:700; color:#fff; line-height:1.2;}
+  /* ---------- VIEWS ---------- */
+  main{padding:18px 16px 8px; max-width:560px; margin:0 auto;}
+  .view{display:none; animation:fade .25s ease;}
+  .view.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+  h2.section{font-family:var(--serif); font-weight:400; font-size:20px; margin:4px 0 14px; color:var(--navy);}
+  /* ---------- HOME ---------- */
+  .today-banner{
+    background:linear-gradient(135deg,var(--lilac) 0%,var(--lilac-deep) 100%);
+    color:#fff; border-radius:var(--radius); padding:18px 18px 16px; margin-bottom:18px;
+  }
+  .today-banner .tb-label{font-size:11px; letter-spacing:1.5px; text-transform:uppercase; opacity:.85; margin:0;}
+  .today-banner .tb-day{font-family:var(--serif); font-size:24px; margin:4px 0 2px;}
+  .today-banner .tb-sub{font-size:13px; opacity:.92; margin:0;}
+  .countdown{display:flex; gap:8px; margin-top:14px;}
+  .cd-box{flex:1; background:rgba(255,255,255,.16); border-radius:var(--radius-sm); padding:9px 4px; text-align:center;}
+  .cd-num{font-size:22px; font-weight:600; line-height:1;}
+  .cd-lbl{font-size:10px; letter-spacing:1px; text-transform:uppercase; opacity:.85; margin-top:3px;}
+  /* day-at-a-glance list */
+  .glance-row{
+    display:flex; gap:12px; padding:11px 0; border-bottom:1px solid var(--line);
+  }
+  .glance-row:last-child{border-bottom:none;}
+  .glance-time{flex:0 0 70px; font-size:13px; font-weight:600; color:var(--lilac-deep); padding-top:1px;}
+  .glance-body{flex:1;}
+  .glance-event{font-size:14px; color:var(--ink);}
+  .glance-who{font-size:12px; color:var(--muted); margin-top:2px;}
+  .glance-row.hl{background:var(--highlight); margin:0 -10px; padding:11px 10px; border-radius:10px; border-bottom:none;}
+  .glance-row.hl + .glance-row{border-top:none;}
+  .star{color:var(--gold); font-size:11px; margin-left:5px;}
+  /* quick links */
+  .quick-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px;}
+  .quick-card{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius-sm);
+    padding:14px; text-align:left; cursor:pointer; font-family:var(--sans);
+    transition:transform .12s, border-color .12s;
+  }
+  .quick-card:active{transform:scale(.97);}
+  .qc-icon{font-size:20px; margin-bottom:6px;}
+  .qc-title{font-size:14px; font-weight:600; color:var(--navy);}
+  .qc-sub{font-size:11.5px; color:var(--muted); margin-top:2px;}
+  /* ---------- HOME SECTIONS ---------- */
+  .home-cd{margin-bottom:16px;}
+  .home-cd .countdown{margin-top:12px;}
+  .whoami-card h3, .howto-card h3{margin-bottom:6px;}
+  .whoami-sub{font-size:12.5px; color:var(--muted); margin:0 0 11px;}
+  .whoami-row{margin-bottom:10px;}
+  .whoami-select{width:100%; font-family:var(--sans); font-size:15px; font-weight:600; color:var(--navy); border:1px solid var(--lilac); border-radius:10px; padding:11px 12px; background:var(--lilac-soft); outline:none;}
+  .whoami-go, .howto-go{width:100%; margin-top:4px; background:var(--lilac); color:#fff; border:none; border-radius:10px; padding:12px; font-size:14px; font-weight:700; cursor:pointer; font-family:var(--sans);}
+  .whoami-go:active, .howto-go:active{background:var(--lilac-deep);}
+  .howto-go{margin:10px 0 4px;}
+  .howto-hint{font-size:12px; color:var(--muted); font-style:italic; margin:10px 0 4px; padding:9px 11px; background:var(--lilac-soft); border-radius:9px;}
+  .howto-item{display:flex; gap:11px; padding:9px 0; border-bottom:1px solid var(--line); font-size:13px; line-height:1.5;}
+  .howto-item:last-child{border-bottom:none;}
+  .howto-item .howto-ic{flex:0 0 22px; font-size:18px; text-align:center;}
+  .howto-item b{color:var(--navy);}
+  .why-text{font-size:13.5px; line-height:1.6; color:var(--ink); margin:0;}
+  .why-text b{color:var(--lilac-deep);}
+  .dgl-row{display:flex; gap:12px; padding:10px 0; border-bottom:1px solid var(--line); align-items:baseline;}
+  .dgl-row:last-child{border-bottom:none;}
+  .dgl-row.hl{background:var(--highlight); margin:0 -10px; padding:11px 10px; border-radius:10px; border-bottom:none;}
+  .dgl-row.hl + .dgl-row{border-top:none;}
+  .dgl-day{flex:0 0 78px; font-size:13px; font-weight:700; color:var(--lilac-deep);}
+  .dgl-desc{flex:1; font-size:13.5px; color:var(--ink);}
+  /* ---------- DAY SELECTOR ---------- */
+  .day-tabs{display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; margin-bottom:14px; scrollbar-width:none;}
+  .day-tabs::-webkit-scrollbar{display:none;}
+  .day-tab{
+    flex:0 0 auto; padding:7px 13px; border-radius:20px; border:1px solid var(--line);
+    background:var(--card); font-size:13px; color:var(--muted); cursor:pointer; white-space:nowrap;
+    font-family:var(--sans); font-weight:500;
+  }
+  .day-tab.active{background:var(--navy); color:#fff; border-color:var(--navy);}
+  .day-tab.is-today{border-color:var(--lilac); color:var(--lilac-deep);}
+  .day-tab.is-today.active{background:var(--lilac-deep); color:#fff; border-color:var(--lilac-deep);}
+  .day-head{margin-bottom:12px;}
+  .day-head .dh-title{font-family:var(--serif); font-size:21px; color:var(--navy); margin:0;}
+  .day-head .dh-sub{font-size:12.5px; color:var(--muted); margin:3px 0 0;}
+  /* schedule rows */
+  .sched-row{
+    display:flex; gap:12px; background:var(--card); border:1px solid var(--line);
+    border-radius:var(--radius-sm); padding:12px 13px; margin-bottom:8px;
+  }
+  .sched-row.hl{background:var(--highlight); border-color:var(--highlight-line);}
+  .sr-time{flex:0 0 64px; font-size:12.5px; font-weight:600; color:var(--lilac-deep);}
+  .sr-body{flex:1; min-width:0;}
+  .sr-event{font-size:14px; color:var(--ink); font-weight:500;}
+  .sr-meta{font-size:12px; color:var(--muted); margin-top:3px;}
+  .sr-meta b{color:#5C6079; font-weight:600;}
+  .sr-notes{font-size:11.5px; color:var(--muted); margin-top:4px; font-style:italic; line-height:1.45;}
+  .sr-loc{display:inline-flex; align-items:center; gap:4px; font-size:12px; font-weight:600; color:#2F8F83; text-decoration:none; margin-top:6px; padding:4px 10px; border:1px solid #2F8F83; border-radius:14px;}
+  .sr-loc:active{background:#E2F2EF;}
+  .sr-vehicle{font-size:12px; color:#5C6079; font-weight:600; margin-top:6px;}
+  .sr-people-toggle{display:inline-flex; align-items:center; gap:6px; margin-top:9px; font-family:var(--sans); font-size:12px; font-weight:600; color:var(--lilac-deep); background:var(--lilac-soft); border:none; border-radius:14px; padding:6px 12px; cursor:pointer;}
+  .sr-people-toggle .sr-caret{transition:transform .15s; font-size:10px;}
+  .sr-people-toggle.open .sr-caret{transform:rotate(90deg);}
+  .sr-people-list{display:none; flex-wrap:wrap; gap:6px; margin-top:8px;}
+  .sr-people-list.open{display:flex;}
+  .sr-person-chip{font-size:12px; padding:4px 10px; border-radius:13px; background:#fff; border:1px solid var(--line); color:#5C6079;}
+  /* schedule header + person picker */
+  .sched-head{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px; flex-wrap:wrap;}
+  .who-picker{display:flex; align-items:center; gap:7px;}
+  .who-label{font-size:11px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; color:var(--muted);}
+  #whoSelect{font-family:var(--sans); font-size:13px; font-weight:600; color:var(--navy); border:1px solid var(--lilac); border-radius:18px; padding:7px 11px; background:var(--lilac-soft); outline:none; max-width:160px;}
+  .who-banner{background:linear-gradient(135deg,var(--lilac) 0%,var(--lilac-deep) 100%); color:#fff; border-radius:12px; padding:11px 14px; margin-bottom:13px; display:flex; align-items:center; gap:11px;}
+  .who-banner .wb-av{flex:0 0 34px; width:34px; height:34px; border-radius:50%; background:rgba(255,255,255,.22); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;}
+  .who-banner .wb-txt{flex:1; min-width:0;}
+  .who-banner .wb-name{font-size:14px; font-weight:600;}
+  .who-banner .wb-sub{font-size:11.5px; opacity:.9;}
+  .who-banner .wb-clear{flex:0 0 auto; background:rgba(255,255,255,.2); color:#fff; border:none; font-size:12px; font-weight:600; padding:6px 12px; border-radius:14px; cursor:pointer;}
+  .sched-daygroup-label{font-family:var(--serif); font-size:15px; color:var(--lilac-deep); margin:18px 0 8px; padding-bottom:4px; border-bottom:1px solid var(--lilac-soft);}
+  .sched-daygroup-label:first-child{margin-top:0;}
+  /* ---------- PEOPLE ---------- */
+  .search-wrap{position:relative; margin-bottom:12px;}
+  .search-box{
+    width:100%; padding:11px 14px 11px 38px; border:1px solid var(--line); border-radius:24px;
+    font-size:15px; font-family:var(--sans); background:var(--card); color:var(--ink); outline:none;
+  }
+  .search-box:focus{border-color:var(--lilac);}
+  .search-ic{position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--muted); font-size:15px;}
+  .filter-chips{display:flex; gap:7px; overflow-x:auto; padding-bottom:4px; margin-bottom:14px; scrollbar-width:none;}
+  .filter-chips::-webkit-scrollbar{display:none;}
+  .chip{
+    flex:0 0 auto; padding:6px 14px; border-radius:18px; border:1px solid var(--line);
+    background:var(--card); font-size:13px; color:var(--muted); cursor:pointer; white-space:nowrap;
+    font-family:var(--sans); font-weight:500;
+  }
+  .chip.active{background:var(--lilac); color:#fff; border-color:var(--lilac);}
+  .person-card{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius-sm);
+    padding:13px 14px; margin-bottom:9px; cursor:pointer; transition:transform .1s;
+  }
+  .person-card:active{transform:scale(.99);}
+  .pc-head{display:flex; align-items:center; gap:12px;}
+  .avatar{
+    flex:0 0 42px; width:42px; height:42px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:14px; font-weight:600; color:#fff; background:var(--lilac);
+  }
+  .avatar.g-Family{background:var(--navy);}
+  .avatar.g-Groomsmen{background:var(--lilac-deep);}
+  .avatar.g-Bridesmaids{background:#B57BA6;}
+  .avatar.g-TheCouple{background:var(--gold);}
+  .pc-name{font-size:15px; font-weight:600; color:var(--ink);}
+  .pc-role{font-size:12px; color:var(--muted); margin-top:1px;}
+  .pc-chev{margin-left:auto; color:var(--line); font-size:18px;}
+  .pc-events{margin-top:11px; padding-top:11px; border-top:1px solid var(--line); display:none;}
+  .person-card.open .pc-events{display:block;}
+  .person-card.open .pc-chev{transform:rotate(90deg); color:var(--lilac);}
+  .ev-row{display:flex; gap:10px; padding:6px 0;}
+  .ev-day{flex:0 0 34px; font-size:11px; font-weight:700; color:var(--lilac-deep); text-transform:uppercase; padding-top:2px;}
+  .ev-time{flex:0 0 58px; font-size:12px; color:var(--muted); padding-top:1px;}
+  .ev-text{flex:1; font-size:13px; color:var(--ink);}
+  .pc-notes{font-size:12px; color:var(--lilac-deep); background:var(--lilac-soft); padding:8px 10px; border-radius:8px; margin-top:9px; line-height:1.45;}
+  .pc-call{display:inline-block; margin-top:11px; font-size:13px; font-weight:600; color:#fff; background:var(--lilac); text-decoration:none; padding:9px 16px; border-radius:20px;}
+  .pc-call:active{background:var(--lilac-deep);}
+  .pc-actions{display:flex; gap:8px; margin-top:11px; flex-wrap:wrap;}
+  .pc-actions .pc-call{margin-top:0;}
+  .pc-msg{display:inline-block; font-size:13px; font-weight:600; color:var(--lilac-deep); background:var(--lilac-soft); text-decoration:none; padding:9px 16px; border-radius:20px;}
+  .pc-msg:active{background:#E0D9F5;}
+  .empty{text-align:center; color:var(--muted); padding:30px 10px; font-size:14px;}
+  /* ---------- INFO VIEW ---------- */
+  .info-card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius-sm); padding:14px; margin-bottom:12px;}
+  .info-card h3{font-family:var(--serif); font-weight:400; font-size:17px; color:var(--navy); margin:0 0 10px;}
+  .info-row{display:flex; gap:10px; padding:7px 0; border-bottom:1px solid var(--line); font-size:13px;}
+  .info-row:last-child{border-bottom:none;}
+  .info-row .ir-k{flex:0 0 40%; color:var(--muted);}
+  .info-row .ir-v{flex:1; color:var(--ink); font-weight:500;}
+  .info-row .ir-v a{color:var(--lilac-deep); text-decoration:none;}
+  .contact-sub{font-size:11px; font-weight:700; letter-spacing:.6px; text-transform:uppercase; color:var(--muted); margin:14px 0 6px;}
+  .contact-sub:first-child{margin-top:2px;}
+  .contact-row{display:flex; align-items:center; gap:11px; padding:9px 0; border-bottom:1px solid var(--line);}
+  .contact-row:last-child{border-bottom:none;}
+  .contact-row .avatar{flex:0 0 36px; width:36px; height:36px; font-size:12px;}
+  .cr-body{flex:1; min-width:0;}
+  .cr-name{font-size:14px; font-weight:600; color:var(--ink);}
+  .cr-role{font-size:11.5px; color:var(--muted); margin-top:1px;}
+  .cr-call{flex:0 0 auto; font-size:13px; font-weight:600; color:var(--lilac-deep); text-decoration:none; padding:6px 11px; border:1px solid var(--lilac); border-radius:16px;}
+  .cr-call:active{background:var(--lilac-soft);}
+  .cr-actions{flex:0 0 auto; display:flex; gap:6px;}
+  .cr-msg{flex:0 0 auto; font-size:13px; font-weight:600; color:#fff; text-decoration:none; padding:6px 11px; background:var(--lilac); border:1px solid var(--lilac); border-radius:16px;}
+  .cr-msg:active{background:var(--lilac-deep);}
+  /* ---------- NAV ---------- */
+  nav{
+    position:fixed; bottom:0; left:0; right:0; background:var(--card);
+    border-top:1px solid var(--line); display:flex; z-index:40;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .nav-btn{
+    flex:1; padding:9px 0 8px; background:none; border:none; cursor:pointer;
+    display:flex; flex-direction:column; align-items:center; gap:2px; font-family:var(--sans);
+    color:var(--muted);
+  }
+  .nav-ic{font-size:20px; line-height:1;}
+  .nav-lbl{font-size:10.5px; font-weight:600; letter-spacing:.2px;}
+  .nav-btn.active{color:var(--lilac-deep);}
+  /* misc */
+  .pill{display:inline-block; font-size:10px; font-weight:700; letter-spacing:.5px; text-transform:uppercase;
+    padding:2px 8px; border-radius:10px; background:var(--lilac-soft); color:var(--lilac-deep);}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="h-left">
+    <h1 class="h-couple">Abby <span class="amp">&amp;</span> Jacob</h1>
+    <p class="h-sub" id="headerSub">The Ranch at Silver Creek · June 13, 2026</p>
+  </div>
+  <div class="h-countdown" id="headerCountdown"></div>
+</header>
+
+<main>
+  <!-- ============ AT A GLANCE (home, default) ============ -->
+  <section class="view active" id="view-home"></section>
+
+  <!-- ============ SCHEDULE ============ -->
+  <section class="view" id="view-schedule">
+    <div class="sched-head">
+      <h2 class="section" style="margin:0;">Schedule</h2>
+      <div class="who-picker">
+        <span class="who-label">Viewing as</span>
+        <select id="whoSelect">
+          <option value="">Everyone</option>
+        </select>
+      </div>
+    </div>
+    <div id="whoBanner" class="who-banner" style="display:none;"></div>
+    <div class="day-tabs" id="dayTabs"></div>
+    <div class="day-head" id="dayHead"></div>
+    <div id="schedList"></div>
+  </section>
+
+  <!-- ============ PEOPLE ============ -->
+  <section class="view" id="view-people">
+    <h2 class="section">Who's who</h2>
+    <div class="search-wrap">
+      <span class="search-ic">&#128269;</span>
+      <input class="search-box" id="searchBox" type="text" placeholder="Search a name…" autocomplete="off">
+    </div>
+    <div class="filter-chips" id="filterChips"></div>
+    <div id="peopleList"></div>
+  </section>
+
+  <!-- ============ INFO ============ -->
+  <section class="view" id="view-info">
+    <h2 class="section">Key info</h2>
+    <div id="infoContent"></div>
+  </section>
+</main>
+
+<nav>
+  <button class="nav-btn active" data-view="home"><span class="nav-ic">&#10024;</span><span class="nav-lbl">At a glance</span></button>
+  <button class="nav-btn" data-view="schedule"><span class="nav-ic">&#128197;</span><span class="nav-lbl">Schedule</span></button>
+  <button class="nav-btn" data-view="people"><span class="nav-ic">&#128101;</span><span class="nav-lbl">People</span></button>
+  <button class="nav-btn" data-view="info"><span class="nav-ic">&#128205;</span><span class="nav-lbl">Info</span></button>
+</nav>
+
+<script src="data.js"></script>
+<script>
+(function(){
+  "use strict";
+  const D = WEDDING;
+  const dayOrder = ["Wed","Thu","Fri","Sat","Sun","Mon"];
+  const dayDates = { Wed:"2026-06-10", Thu:"2026-06-11", Fri:"2026-06-12", Sat:"2026-06-13", Sun:"2026-06-14", Mon:"2026-06-15" };
+
+  // ---- which day is "today" (clamped into the wedding window) ----
+  function todayKey(){
+    const now = new Date();
+    const iso = now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");
+    for(const k of dayOrder){ if(dayDates[k]===iso) return k; }
+    // before the weekend → show Wednesday; after → show Monday
+    if(iso < dayDates.Wed) return null;      // "upcoming" state
+    if(iso > dayDates.Mon) return "Mon";
+    return null;
+  }
+  const TODAY = todayKey();
+
+  // ---- persisted "who are you" name ----
+  const NAME_KEY = "abbyjacob_myname";
+  function getMyName(){ try{ return localStorage.getItem(NAME_KEY) || ""; }catch(e){ return ""; } }
+  function setMyName(n){ try{ if(n) localStorage.setItem(NAME_KEY,n); else localStorage.removeItem(NAME_KEY); }catch(e){} }
+
+  // ===================== HOME =====================
+  function renderHome(){
+    const el = document.getElementById("view-home");
+    const myName = getMyName();
+    let html = "";
+
+    // ---- 1. Countdown banner (compact) ----
+    html += `<div class="today-banner home-cd">
+      <p class="tb-label">${TODAY ? "The weekend is here" : "Counting down to"}</p>
+      <p class="tb-day">Abby &amp; Jacob</p>
+      <p class="tb-sub">Saturday, June 13 · 5:00 PM · The Ranch at Silver Creek</p>
+      ${countdownHTML()}
+    </div>`;
+
+    // ---- 2. Who are you? ----
+    html += `<div class="info-card whoami-card">
+      <h3>Who are you?</h3>
+      <p class="whoami-sub">Pick your name so your schedule is one tap away.</p>
+      <div class="whoami-row">
+        <select id="homeWhoSelect" class="whoami-select">
+          <option value="">— Select your name —</option>
+          ${D.people.map(p=>p.name).sort((a,b)=>a.localeCompare(b)).map(n=>`<option value="${escapeHtml(n)}" ${n===myName?'selected':''}>${escapeHtml(n)}</option>`).join("")}
+        </select>
+      </div>
+      ${myName?`<button class="whoami-go" id="homeMyScheduleBtn">See ${escapeHtml(myName.split(" ")[0])}'s schedule →</button>`:``}
+    </div>`;
+
+    // ---- 3. How to use ----
+    html += `<div class="info-card howto-card">
+      <h3>How to use this app</h3>
+      <div class="howto-item"><span class="howto-ic">&#128197;</span><div>
+        <b>Schedule</b> — the heart of the app. Tap <b>All</b> to see the whole weekend, or a single day. Use <b>“Viewing as”</b> at the top to filter to one person — every pickup, event, and task they're part of. Each event has a <b>People involved</b> dropdown, a 📍 map link, and any car/notes.
+      </div></div>
+      ${myName
+        ? `<button class="howto-go" id="howtoMyScheduleBtn">&#128694; Click here for your schedule</button>`
+        : `<p class="howto-hint">Pick your name above, then a “your schedule” button appears here.</p>`}
+      <div class="howto-item"><span class="howto-ic">&#10024;</span><div><b>At a glance</b> — this page: countdown, the big-picture plan, and how things work.</div></div>
+      <div class="howto-item"><span class="howto-ic">&#128101;</span><div><b>People</b> — search anyone or filter by Groomsmen / Bridesmaids / Family. Tap a name for their full timeline and a Call button.</div></div>
+      <div class="howto-item"><span class="howto-ic">&#128205;</span><div><b>Info</b> — everyone's phone numbers (tap to call) and every location (tap to open in Maps).</div></div>
+    </div>`;
+
+    // ---- 4. Who it's for & why ----
+    html += `<div class="info-card">
+      <h3>Who it's for &amp; why</h3>
+      <p class="why-text">This is mainly for our <b>close family</b> and <b>bridal party</b> to keep track of what they're doing across the weekend — pickups, drop-offs, rehearsal, the wedding day, and the Indian ceremony. Instead of texting around “where do I need to be?”, just check the app: pick your name, see your day. 💛</p>
+    </div>`;
+
+    // ---- 5. Days at a glance ----
+    html += `<div class="info-card">
+      <h3>The weekend at a glance</h3>
+      <div class="dgl-row"><div class="dgl-day">Wed–Thu</div><div class="dgl-desc">Early arrivals &amp; family dinner</div></div>
+      <div class="dgl-row"><div class="dgl-day">Friday</div><div class="dgl-desc">Arrivals · Rehearsal · Rehearsal Dinner</div></div>
+      <div class="dgl-row hl"><div class="dgl-day">Saturday</div><div class="dgl-desc">Wedding &amp; Reception &#127881;</div></div>
+      <div class="dgl-row"><div class="dgl-day">Sunday</div><div class="dgl-desc">Indian Thali Ceremony · Honeymoon departure</div></div>
+      <div class="dgl-row"><div class="dgl-day">Monday</div><div class="dgl-desc">Final departures</div></div>
+    </div>`;
+
+    el.innerHTML = html;
+
+    // wire the name selector
+    const sel = el.querySelector("#homeWhoSelect");
+    if(sel) sel.addEventListener("change",()=>{
+      setMyName(sel.value);
+      // keep schedule's own picker in sync
+      const ws = document.getElementById("whoSelect"); if(ws) ws.value = sel.value;
+      renderHome(); // re-render so the "your schedule" buttons appear/update
+    });
+    // "your schedule" buttons → go to schedule pre-filtered
+    [el.querySelector("#homeMyScheduleBtn"), el.querySelector("#howtoMyScheduleBtn")].forEach(b=>{
+      if(b) b.addEventListener("click",()=>goToMySchedule());
+    });
+  }
+
+  function goToMySchedule(){
+    const myName = getMyName();
+    if(myName){
+      activePerson = myName;
+      const ws = document.getElementById("whoSelect"); if(ws) ws.value = myName;
+    }
+    switchView("schedule");
+    renderScheduleArea();
+  }
+
+  // header countdown (compact)
+  function renderHeaderCountdown(){
+    const wrap = document.getElementById("headerCountdown");
+    if(!wrap) return;
+    const target = new Date(D.meta.ceremonyTime).getTime();
+    const now = Date.now();
+    if(target < now){
+      wrap.innerHTML = `<div class="h-cd-married">Just<br>married &#128144;</div>`;
+      return;
+    }
+    const days = Math.floor((target-now)/86400000);
+    if(days >= 1){
+      wrap.innerHTML = `<div class="h-cd-num">${days}</div><div class="h-cd-lbl">${days===1?'Day':'Days'} to go</div>`;
+    } else {
+      let diff = target-now;
+      const hrs = Math.floor(diff/3600000); diff-=hrs*3600000;
+      const mins = Math.floor(diff/60000);
+      wrap.innerHTML = `<div class="h-cd-num">${hrs}h ${mins}m</div><div class="h-cd-lbl">To go</div>`;
+    }
+  }
+
+  // homepage countdown (compact: days + hours, no minutes)
+  function countdownHTML(){
+    const target = new Date(D.meta.ceremonyTime).getTime();
+    const now = Date.now();
+    if(target < now){
+      return `<div class="countdown"><div class="cd-box" style="flex:none;width:100%;"><div class="cd-num" style="font-size:18px;">Just married &#128144;</div></div></div>`;
+    }
+    let diff = target - now;
+    const days = Math.floor(diff/86400000); diff-=days*86400000;
+    const hrs = Math.floor(diff/3600000);
+    return `<div class="countdown">
+      <div class="cd-box"><div class="cd-num">${days}</div><div class="cd-lbl">Days</div></div>
+      <div class="cd-box"><div class="cd-num">${hrs}</div><div class="cd-lbl">Hours</div></div>
+    </div>`;
+  }
+
+  // ===================== SCHEDULE =====================
+  let activeDay = TODAY || "All";
+  let activePerson = "";   // "" = Everyone
+
+  let rowSeq = 0;
+  function rowHTML(r){
+    const locLink = r.location
+      ? `<a class="sr-loc" href="${mapsLink(r.location)}" target="_blank" onclick="event.stopPropagation()">&#128205; ${escapeHtml(r.location)}</a>`
+      : '';
+    // collapsible people dropdown
+    let peopleBlock = '';
+    if(Array.isArray(r.people) && r.people.length){
+      const id = "ppl_" + (rowSeq++);
+      const chips = r.people.map(n=>`<span class="sr-person-chip">${escapeHtml(n)}</span>`).join("");
+      peopleBlock = `
+        <button class="sr-people-toggle" type="button" data-target="${id}" onclick="event.stopPropagation()">
+          <span>People involved (${r.people.length})</span><span class="sr-caret">&#9656;</span>
+        </button>
+        <div class="sr-people-list" id="${id}">${chips}</div>`;
+    }
+    const vehicle = (r.vehicle && r.vehicle!=="—") ? `<div class="sr-vehicle">&#128663; ${escapeHtml(r.vehicle)}</div>` : '';
+    return `<div class="sched-row ${r.highlight?'hl':''}">
+      <div class="sr-time">${r.time}</div>
+      <div class="sr-body">
+        <div class="sr-event">${r.event}${r.highlight?'<span class="star">&#9733;</span>':''}</div>
+        ${r.notes?`<div class="sr-notes">${r.notes}</div>`:''}
+        ${vehicle}
+        ${locLink}
+        ${peopleBlock}
+      </div>
+    </div>`;
+  }
+
+  // wire up people toggles after rendering a list
+  function wirePeopleToggles(){
+    document.querySelectorAll(".sr-people-toggle").forEach(btn=>{
+      btn.onclick=(e)=>{
+        e.stopPropagation();
+        const list = document.getElementById(btn.dataset.target);
+        const open = list.classList.toggle("open");
+        btn.classList.toggle("open", open);
+      };
+    });
+  }
+
+  // map a location NAME (or raw address) to a maps URL
+  function mapsLink(loc){
+    const known = (D.locations||[]).find(l=>l.name===loc);
+    const addr = known ? known.address : loc;
+    return "https://maps.google.com/?q=" + encodeURIComponent(addr);
+  }
+  function escapeHtml(s){ return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+  function buildWhoSelect(){
+    const sel = document.getElementById("whoSelect");
+    const names = D.people.map(p=>p.name).sort((a,b)=>a.localeCompare(b));
+    sel.innerHTML = `<option value="">Everyone</option>` +
+      names.map(n=>`<option value="${escapeHtml(n)}">${escapeHtml(n)}</option>`).join("");
+    sel.value = activePerson;
+    sel.addEventListener("change",()=>{ activePerson = sel.value; renderScheduleArea(); });
+  }
+
+  const tabKeys = ["All", ...dayOrder];
+  function renderDayTabs(){
+    const wrap = document.getElementById("dayTabs");
+    wrap.innerHTML = tabKeys.map(k=>{
+      const isToday = k===TODAY;
+      const label = k==="All" ? "All" : k;
+      return `<button class="day-tab ${k===activeDay?'active':''} ${isToday?'is-today':''}" data-day="${k}">${label}</button>`;
+    }).join("");
+    wrap.querySelectorAll(".day-tab").forEach(b=>{
+      b.addEventListener("click",()=>{ activeDay=b.dataset.day; renderDayTabs(); renderScheduleDay(); });
+    });
+  }
+
+  // top-level: decide person-mode vs everyone-mode
+  function renderScheduleArea(){
+    const banner = document.getElementById("whoBanner");
+    const tabs = document.getElementById("dayTabs");
+    const head = document.getElementById("dayHead");
+    if(activePerson){
+      const p = D.people.find(x=>x.name===activePerson);
+      banner.style.display = "flex";
+      banner.innerHTML = `
+        <div class="wb-av">${p?p.initials:'?'}</div>
+        <div class="wb-txt">
+          <div class="wb-name">${escapeHtml(activePerson)}'s schedule</div>
+          <div class="wb-sub">${p?p.events.length:0} things across the weekend${p&&p.role?` · ${escapeHtml(p.role)}`:''}</div>
+        </div>
+        <button class="wb-clear" id="clearWho">See full</button>`;
+      banner.querySelector("#clearWho").onclick=()=>{
+        activePerson=""; document.getElementById("whoSelect").value=""; renderScheduleArea();
+      };
+      tabs.style.display="none";
+      head.innerHTML="";
+      renderPersonSchedule();
+    } else {
+      banner.style.display="none";
+      tabs.style.display="flex";
+      renderDayTabs();
+      renderScheduleDay();
+    }
+  }
+
+  // EVERYONE mode — one day, or All days
+  function renderScheduleDay(){
+    const head = document.getElementById("dayHead");
+    const list = document.getElementById("schedList");
+    if(activeDay==="All"){
+      head.innerHTML = `<p class="dh-title">Full weekend</p><p class="dh-sub">Every event, Wed → Mon</p>`;
+      let html = "";
+      dayOrder.forEach(dk=>{
+        const d = D.days[dk];
+        html += `<div class="sched-daygroup-label">${d.label}</div>`;
+        html += d.rows.map(rowHTML).join("");
+      });
+      list.innerHTML = html;
+    } else {
+      const d = D.days[activeDay];
+      head.innerHTML = `<p class="dh-title">${d.label}</p><p class="dh-sub">${d.sub}</p>`;
+      list.innerHTML = d.rows.map(rowHTML).join("");
+    }
+    wirePeopleToggles();
+  }
+
+  // PERSON mode — every day this person appears in, grouped
+  function renderPersonSchedule(){
+    const list = document.getElementById("schedList");
+    let html = "";
+    let any = false;
+    dayOrder.forEach(dk=>{
+      const d = D.days[dk];
+      const rows = d.rows.filter(r => Array.isArray(r.people) && r.people.includes(activePerson));
+      if(rows.length){
+        any = true;
+        html += `<div class="sched-daygroup-label">${d.label}</div>`;
+        html += rows.map(rowHTML).join("");
+      }
+    });
+    list.innerHTML = any ? html
+      : `<div class="empty">No scheduled events tagged for ${escapeHtml(activePerson)} yet.</div>`;
+    wirePeopleToggles();
+  }
+
+  // ===================== PEOPLE =====================
+  let activeFilter = "All";
+  let searchTerm = "";
+  function renderChips(){
+    const chips = ["All", ...D.groups];
+    const wrap = document.getElementById("filterChips");
+    wrap.innerHTML = chips.map(c=>`<button class="chip ${c===activeFilter?'active':''}" data-f="${c}">${c}</button>`).join("");
+    wrap.querySelectorAll(".chip").forEach(b=>{
+      b.addEventListener("click",()=>{ activeFilter=b.dataset.f; renderChips(); renderPeople(); });
+    });
+  }
+  function gClass(g){ return "g-"+g.replace(/\s/g,""); }
+
+  // phone lookup: normalize names, match People → contacts
+  const phoneMap = {};
+  (D.contacts||[]).forEach(c=>{
+    if(c.phone) phoneMap[c.name.toLowerCase()] = c.phone;
+  });
+  function lookupPhone(name){
+    return phoneMap[name.toLowerCase()] || null;
+  }
+  function prettyPhone(p){
+    return p.length===10 ? `(${p.slice(0,3)}) ${p.slice(3,6)}-${p.slice(6)}` : p;
+  }
+
+  function renderPeople(){
+    const list = document.getElementById("peopleList");
+    let people = D.people.slice();
+    if(activeFilter!=="All") people = people.filter(p=>p.group===activeFilter);
+    if(searchTerm){
+      const t = searchTerm.toLowerCase();
+      people = people.filter(p=>p.name.toLowerCase().includes(t)||p.role.toLowerCase().includes(t));
+    }
+    if(!people.length){ list.innerHTML = `<div class="empty">No one found. Try a different name.</div>`; return; }
+    list.innerHTML = people.map((p,i)=>{
+      const evs = p.events.map(e=>`
+        <div class="ev-row"><div class="ev-day">${e.day}</div><div class="ev-time">${e.time}</div><div class="ev-text">${e.text}</div></div>
+      `).join("");
+      const phone = lookupPhone(p.name);
+      const callBtn = phone
+        ? `<div class="pc-actions">
+             <a class="pc-msg" href="sms:${phone}" onclick="event.stopPropagation()">&#128172; Text</a>
+             <a class="pc-call" href="tel:${phone}" onclick="event.stopPropagation()">&#128222; Call ${prettyPhone(phone)}</a>
+           </div>`
+        : '';
+      return `<div class="person-card" data-idx="${i}">
+        <div class="pc-head">
+          <div class="avatar ${gClass(p.group)}">${p.initials}</div>
+          <div><div class="pc-name">${p.name}</div><div class="pc-role">${p.role}</div></div>
+          <div class="pc-chev">&#8250;</div>
+        </div>
+        <div class="pc-events">
+          ${evs || '<div class="ev-row"><div class="ev-text" style="color:var(--muted);">No scheduled timeline items.</div></div>'}
+          ${p.notes?`<div class="pc-notes">${p.notes}</div>`:''}
+          ${callBtn}
+        </div>
+      </div>`;
+    }).join("");
+    list.querySelectorAll(".person-card").forEach(c=>{
+      c.addEventListener("click",()=>c.classList.toggle("open"));
+    });
+  }
+  document.getElementById("searchBox").addEventListener("input",e=>{
+    searchTerm = e.target.value.trim(); renderPeople();
+  });
+
+  // ===================== INFO =====================
+  function renderInfo(){
+    const el = document.getElementById("infoContent");
+    let html = "";
+
+    // ---- Contacts ----
+    html += `<div class="info-card"><h3>Contacts</h3>`;
+    (D.contacts||[]).forEach(c=>{
+      if(c.section){ html += `<div class="contact-sub">${c.section}</div>`; return; }
+      const initials = c.name.split(/\s+/).slice(0,2).map(w=>w[0]).join("").toUpperCase();
+      const pretty = c.phone.length===10
+        ? `(${c.phone.slice(0,3)}) ${c.phone.slice(3,6)}-${c.phone.slice(6)}`
+        : c.phone;
+      html += `<div class="contact-row">
+        <div class="avatar">${initials}</div>
+        <div class="cr-body">
+          <div class="cr-name">${c.name}</div>
+          <div class="cr-role">${c.role}</div>
+        </div>
+        <div class="cr-actions">
+          <a class="cr-msg" href="sms:${c.phone}">Text</a>
+          <a class="cr-call" href="tel:${c.phone}">Call</a>
+        </div>
+      </div>`;
+    });
+    html += `</div>`;
+
+    html += `<div class="info-card"><h3>Locations</h3>`;
+    D.locations.forEach(l=>{
+      const q = encodeURIComponent(l.address);
+      html += `<div class="info-row"><div class="ir-k">${l.name}</div><div class="ir-v"><a href="https://maps.google.com/?q=${q}" target="_blank">${l.address}</a></div></div>`;
+    });
+    html += `</div>`;
+    el.innerHTML = html;
+  }
+
+  // ===================== NAV =====================
+  function switchView(name){
+    document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+    document.getElementById("view-"+name).classList.add("active");
+    document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active", b.dataset.view===name));
+    window.scrollTo(0,0);
+  }
+  document.querySelectorAll(".nav-btn").forEach(b=>{
+    b.addEventListener("click",()=>switchView(b.dataset.view));
+  });
+
+  // ---- init ----
+  renderHeaderCountdown();
+  renderHome();
+  buildWhoSelect();
+  renderScheduleArea();
+  renderChips();
+  renderPeople();
+  renderInfo();
+
+  // service worker for installability / offline
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  }
+})();
+</script>
+</body>
+</html>
